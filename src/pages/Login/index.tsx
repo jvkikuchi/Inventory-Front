@@ -11,8 +11,13 @@ import {
   VStack,
 } from 'native-base';
 import CircleBorder from '../../components/CircleBorder';
+import {Icon} from '../../components/Icon';
+import type {StackParamsList} from '../../types/rootStackParamListType';
+import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-const Login = () => {
+const Login = ({
+  navigation,
+}: NativeStackScreenProps<StackParamsList, 'Login'>): JSX.Element => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isEmailFocused, setIsEmailFocused] = useState<boolean>(false);
   const [isPasswordFocused, setPasswordFocused] = useState<boolean>(false);
@@ -83,14 +88,18 @@ const Login = () => {
               variant="underlined"
               type={showPassword ? 'text' : 'password'}
               InputRightElement={
-                <Pressable onPress={() => setShowPassword(!showPassword)} />
+                <Pressable onPress={() => setShowPassword(!showPassword)}>
+                  <Icon name={showPassword ? 'Eye' : 'EyeOff'} />
+                </Pressable>
               }
             />
             <VStack alignItems="center" mt={'5'}>
               <Text fontSize="md">Não tem conta ? Clique em</Text>
-              <Text fontSize="md" fontWeight="bold">
-                criar conta
-              </Text>
+              <Pressable onPress={() => navigation.navigate('Register')}>
+                <Text fontSize="md" fontWeight="bold">
+                  criar conta
+                </Text>
+              </Pressable>
             </VStack>
             <VStack alignItems="center" w="100%">
               <Button
