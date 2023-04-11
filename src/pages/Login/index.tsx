@@ -30,6 +30,7 @@ const Login = ({
     setTimeout(() => {
       setIsLoading(false);
     }, 3000);
+    navigation.navigate('Tabs');
   };
 
   return (

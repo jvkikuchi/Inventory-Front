@@ -3,5 +3,6 @@ module.exports = {
   extends: ['@react-native-community'],
   rules: {
     semi: 'error',
+    'prettier/prettier': ['error', {endOfLine: 'auto'}],
   },
 };

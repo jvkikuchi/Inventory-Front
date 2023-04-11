@@ -4,5 +4,9 @@ export type IconNameType = keyof typeof Icons;
 
 export interface IconProps {
   name: IconNameType;
-  color?: string;
+  fill?: string;
+  stroke?: string;
+  strokeWidth?: number;
+  width?: number;
+  height?: number;
 }
