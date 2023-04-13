@@ -153,7 +153,7 @@ const Register = ({
                 isLoading={isLoading}
                 _spinner={{size: 'lg'}}>
                 <Text fontSize={24} color="white" fontWeight="medium">
-                  ENTRAR
+                  REGISTRAR
                 </Text>
               </Button>
             </VStack>
