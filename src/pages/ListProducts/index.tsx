@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react';
-import {Box, VStack, Text, Input, Divider, Modal, HStack} from 'native-base';
+import {Box, VStack, Text, Input, Modal, HStack} from 'native-base';
 import type {StackParamsList} from '../../types/rootStackParamListType';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Icon} from '../../components/Icon';
@@ -9,6 +9,7 @@ import {productsApi} from '../../utils/productsApi';
 import CardProduct from '../../components/ProductCard';
 import Loading from '../../components/Loading';
 import {categoryApi} from '../../utils/categoryApi';
+import Separator from '../../components/Separator';
 
 const ListProducts = ({
   navigation,
@@ -26,8 +27,6 @@ const ListProducts = ({
 
     return {products, categories};
   });
-
-  const separator = () => <Divider w={'100%'} />;
 
   const renderProduct = ({item}) => {
     return (
@@ -161,7 +160,7 @@ const ListProducts = ({
               showsVerticalScrollIndicator={false}
               renderItem={renderProduct}
               data={data.products.slice(0, 10)}
-              ItemSeparatorComponent={separator}
+              ItemSeparatorComponent={Separator}
             />
           </Box>
         </>
