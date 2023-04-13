@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import Register from './pages/Register';
 import Login from './pages/Login';
-import Products from './pages/Products';
+import ListProducts from './pages/ListProducts';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
@@ -16,7 +16,7 @@ import {Icon} from './components/Icon';
 const Tab = createBottomTabNavigator<TabParamsList>();
 
 const icons = {
-  Products: 'BookOpen',
+  ListProducts: 'BookOpen',
 };
 
 const TabsStack = () => {
@@ -48,7 +48,7 @@ const TabsStack = () => {
           paddingVertical: 10,
         },
       })}>
-      <Tab.Screen name="Products" component={Products} />
+      <Tab.Screen name="ListProducts" component={ListProducts} />
     </Tab.Navigator>
   );
 };
@@ -63,6 +63,7 @@ export const Routes = () => {
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="Product" component={Register} />
         <Stack.Screen name="Tabs" component={TabsStack} />
       </Stack.Navigator>
     </NavigationContainer>

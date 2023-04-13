@@ -10,7 +10,7 @@ import CardProduct from '../../components/ProductCard';
 import Loading from '../../components/Loading';
 import {categoryApi} from '../../utils/categoryApi';
 
-const Products = ({
+const ListProducts = ({
   navigation,
 }: NativeStackScreenProps<StackParamsList, 'Login'>): JSX.Element => {
   const [value, setValue] = useState('');
@@ -169,4 +169,4 @@ const Products = ({
     </Box>
   );
 };
-export default Products;
+export default ListProducts;
