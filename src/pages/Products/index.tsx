@@ -1,16 +1,200 @@
-import React from 'react';
-import {Box, Text} from 'native-base';
+import React, {useState} from 'react';
+import {Box, VStack, Text, Input, Divider, Modal, HStack} from 'native-base';
 import type {StackParamsList} from '../../types/rootStackParamListType';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {Icon} from '../../components/Icon';
+import {FlatList, Pressable} from 'react-native';
+import {useQuery} from 'react-query';
+import {productsApi} from '../../utils/productsApi';
+import CardProduct from '../../components/ProductCard';
+import Loading from '../../components/Loading';
+import {categoryApi} from '../../utils/categoryApi';
+import {DatePickerModal} from 'react-native-paper-dates';
 
 const Products = ({
   navigation,
 }: NativeStackScreenProps<StackParamsList, 'Login'>): JSX.Element => {
+  const [value, setValue] = useState('');
+  const [filters, setFilter] = useState<Record<string, boolean>>({});
+  const [tagFilter, setTagFilter] = useState<Record<string, boolean>>({});
+  const [showModal, setShowModal] = useState(true);
+  const [inputDate, setInputDate] = React.useState(undefined);
+
+  const {data, isLoading} = useQuery(['list-products', filters], async () => {
+    const [products, categories] = await Promise.all([
+      productsApi.list(filters),
+      categoryApi.list(filters),
+    ]);
+
+    return {products, categories};
+  });
+
+  const [range, setRange] = React.useState({
+    startDate: undefined,
+    endDate: undefined,
+  });
+  const [open, setOpen] = React.useState(false);
+
+  const onDismiss = React.useCallback(() => {
+    setOpen(false);
+  }, [setOpen]);
+
+  const onConfirm = React.useCallback(
+    ({startDate, endDate}) => {
+      setOpen(false);
+      setRange({startDate, endDate});
+    },
+    [setOpen, setRange],
+  );
+
+  const separator = () => <Divider w={'100%'} />;
+
+  const renderProduct = ({item}) => {
+    return (
+      <CardProduct
+        category={item.category}
+        image={item.image}
+        name={item.name}
+        stockQuantity={item.stockQuantity}
+      />
+    );
+  };
+
+  const renderTags = tags => {
+    return (
+      <HStack
+        flexWrap={'wrap'}
+        flexGrow={2}
+        flexDirection={'row'}
+        alignItems={'center'}
+        alignContent={'flex-start'}
+        paddingY={2}
+        space={3}>
+        {tags.map((tag, index) => {
+          const active = {
+            border: '#FF9A3C',
+            background: '#FF9A3C',
+          };
+
+          const inactive = {
+            border: '#AEAEAE',
+            background: '#FFF',
+          };
+
+          const colors = tagFilter[tag.name] ? active : inactive;
+
+          return (
+            <Pressable
+              onPress={() => {
+                setTagFilter({...tagFilter, [tag.name]: !tagFilter[tag.name]});
+              }}
+              key={index}>
+              <HStack
+                marginY={0.5}
+                padding={2}
+                borderRadius={20}
+                backgroundColor={colors.background}
+                borderWidth={1}
+                borderColor={colors.border}
+                alignItems={'center'}>
+                <Text key={index}>{tag.name}</Text>
+              </HStack>
+            </Pressable>
+          );
+        })}
+      </HStack>
+    );
+  };
+
   return (
-    <Box safeArea justifyContent={'center'}>
-      <Text> Pedro </Text>
+    <Box flex={1} safeArea>
+      <VStack w="100%" backgroundColor={'#3A4750'}>
+        <Text paddingY={6} paddingX={4} fontSize={'2xl'} color="#FFFFFF">
+          Produtos
+        </Text>
+        <Input
+          borderRadius={0}
+          value={value}
+          w="100%"
+          onChangeText={text => {
+            setValue(text);
+          }}
+          fontSize={'lg'}
+          color={'#6D6D6D'}
+          focusOutlineColor={'#D9D9D9'}
+          backgroundColor={'#D9D9D9'}
+          paddingX={5}
+          placeholder="escreva o nome/codigo do produto"
+          rightElement={
+            <Pressable onPress={() => setShowModal(true)}>
+              <Box paddingRight={2}>
+                <Icon name={'Filter'} width={30} height={30} fill="#5B5B5B" />
+              </Box>
+            </Pressable>
+          }
+          leftElement={
+            <Box paddingLeft={2}>
+              <Icon
+                name={'Search'}
+                width={25}
+                height={25}
+                strokeWidth={3}
+                stroke="#5B5B5B"
+                fill="#D9D9D9"
+              />
+            </Box>
+          }
+        />
+      </VStack>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <>
+          <Modal
+            isOpen={showModal}
+            onClose={() => setShowModal(false)}
+            size={'full'}>
+            <Modal.Content
+              padding={5}
+              borderTopRadius={60}
+              marginBottom={0}
+              marginTop={'auto'}>
+              <Modal.CloseButton />
+
+              <Modal.Header>Filtros</Modal.Header>
+              <Modal.Body>
+                <Box>
+                  <Text bold fontSize={'md'}>
+                    Categorias de produto:
+                  </Text>
+                  {renderTags(data.categories)}
+                </Box>
+                <Box>
+                  <DatePickerModal
+                    locale="en"
+                    mode="range"
+                    visible={true}
+                    onDismiss={onDismiss}
+                    startDate={range.startDate}
+                    endDate={range.endDate}
+                    onConfirm={onConfirm}
+                  />
+                </Box>
+              </Modal.Body>
+            </Modal.Content>
+          </Modal>
+          <Box flex={1} flexDirection={'column'}>
+            <FlatList
+              keyExtractor={item => item.id}
+              showsVerticalScrollIndicator={false}
+              renderItem={renderProduct}
+              data={data.products}
+              ItemSeparatorComponent={separator}
+            />
+          </Box>
+        </>
+      )}
     </Box>
   );
 };
-
 export default Products;
