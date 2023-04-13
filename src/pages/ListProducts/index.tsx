@@ -1,6 +1,6 @@
 import React, {useState, useCallback} from 'react';
 import {Box, VStack, Text, Input, Modal, HStack} from 'native-base';
-import type {StackParamsList} from '../../types/rootStackParamListType';
+import type {TabParamsList} from '../../types/rootStackParamListType';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Icon} from '../../components/Icon';
 import {FlatList, Pressable} from 'react-native';
@@ -13,7 +13,7 @@ import Separator from '../../components/Separator';
 
 const ListProducts = ({
   navigation,
-}: NativeStackScreenProps<StackParamsList, 'Login'>): JSX.Element => {
+}: NativeStackScreenProps<TabParamsList, 'ListProducts'>): JSX.Element => {
   const [value, setValue] = useState('');
   const [filters, setFilter] = useState<Record<string, boolean>>({});
   const [tagFilter, setTagFilter] = useState<Record<string, boolean>>({});
