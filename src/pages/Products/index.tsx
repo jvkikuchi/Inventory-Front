@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import {Box, VStack, Text, Input, Divider, Modal, HStack} from 'native-base';
 import type {StackParamsList} from '../../types/rootStackParamListType';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -9,7 +9,6 @@ import {productsApi} from '../../utils/productsApi';
 import CardProduct from '../../components/ProductCard';
 import Loading from '../../components/Loading';
 import {categoryApi} from '../../utils/categoryApi';
-import {DatePickerModal} from 'react-native-paper-dates';
 
 const Products = ({
   navigation,
@@ -18,34 +17,15 @@ const Products = ({
   const [filters, setFilter] = useState<Record<string, boolean>>({});
   const [tagFilter, setTagFilter] = useState<Record<string, boolean>>({});
   const [showModal, setShowModal] = useState(true);
-  const [inputDate, setInputDate] = React.useState(undefined);
 
   const {data, isLoading} = useQuery(['list-products', filters], async () => {
     const [products, categories] = await Promise.all([
       productsApi.list(filters),
-      categoryApi.list(filters),
+      categoryApi.list(),
     ]);
 
     return {products, categories};
   });
-
-  const [range, setRange] = React.useState({
-    startDate: undefined,
-    endDate: undefined,
-  });
-  const [open, setOpen] = React.useState(false);
-
-  const onDismiss = React.useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
-
-  const onConfirm = React.useCallback(
-    ({startDate, endDate}) => {
-      setOpen(false);
-      setRange({startDate, endDate});
-    },
-    [setOpen, setRange],
-  );
 
   const separator = () => <Divider w={'100%'} />;
 
@@ -60,6 +40,15 @@ const Products = ({
     );
   };
 
+  const handleTagFilter = useCallback(
+    tagName => {
+      setTagFilter(prevTagFilter => {
+        return {...prevTagFilter, [tagName]: !prevTagFilter[tagName]};
+      });
+    },
+    [setTagFilter],
+  );
+
   const renderTags = tags => {
     return (
       <HStack
@@ -70,25 +59,18 @@ const Products = ({
         alignContent={'flex-start'}
         paddingY={2}
         space={3}>
-        {tags.map((tag, index) => {
+        {tags.map(tag => {
           const active = {
             border: '#FF9A3C',
             background: '#FF9A3C',
           };
-
           const inactive = {
             border: '#AEAEAE',
             background: '#FFF',
           };
-
           const colors = tagFilter[tag.name] ? active : inactive;
-
           return (
-            <Pressable
-              onPress={() => {
-                setTagFilter({...tagFilter, [tag.name]: !tagFilter[tag.name]});
-              }}
-              key={index}>
+            <Pressable onPress={() => handleTagFilter(tag.name)} key={tag.id}>
               <HStack
                 marginY={0.5}
                 padding={2}
@@ -97,7 +79,7 @@ const Products = ({
                 borderWidth={1}
                 borderColor={colors.border}
                 alignItems={'center'}>
-                <Text key={index}>{tag.name}</Text>
+                <Text>{tag.name}</Text>
               </HStack>
             </Pressable>
           );
@@ -169,17 +151,7 @@ const Products = ({
                   </Text>
                   {renderTags(data.categories)}
                 </Box>
-                <Box>
-                  <DatePickerModal
-                    locale="en"
-                    mode="range"
-                    visible={true}
-                    onDismiss={onDismiss}
-                    startDate={range.startDate}
-                    endDate={range.endDate}
-                    onConfirm={onConfirm}
-                  />
-                </Box>
+                <Box />
               </Modal.Body>
             </Modal.Content>
           </Modal>
@@ -188,7 +160,7 @@ const Products = ({
               keyExtractor={item => item.id}
               showsVerticalScrollIndicator={false}
               renderItem={renderProduct}
-              data={data.products}
+              data={data.products.slice(0, 10)}
               ItemSeparatorComponent={separator}
             />
           </Box>
