@@ -1,15 +1,16 @@
 import React, {useState, useCallback} from 'react';
-import {Box, VStack, Text, Input, Modal, HStack} from 'native-base';
+import {Box, VStack, Text, Input, Modal, HStack, Pressable} from 'native-base';
 import type {TabParamsList} from '../../types/rootStackParamListType';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Icon} from '../../components/Icon';
-import {FlatList, Pressable} from 'react-native';
+import {FlatList, ListRenderItemInfo} from 'react-native';
 import {useQuery} from 'react-query';
 import {productsApi} from '../../utils/productsApi';
 import CardProduct from '../../components/ProductCard';
 import Loading from '../../components/Loading';
 import {categoryApi} from '../../utils/categoryApi';
 import Separator from '../../components/Separator';
+import {ProductInterface} from '../../types/ProductInterface';
 
 const ListProducts = ({
   navigation,
@@ -17,7 +18,7 @@ const ListProducts = ({
   const [value, setValue] = useState('');
   const [filters, setFilter] = useState<Record<string, boolean>>({});
   const [tagFilter, setTagFilter] = useState<Record<string, boolean>>({});
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
 
   const {data, isLoading} = useQuery(['list-products', filters], async () => {
     const [products, categories] = await Promise.all([
@@ -28,14 +29,17 @@ const ListProducts = ({
     return {products, categories};
   });
 
-  const renderProduct = ({item}) => {
+  const renderProduct = ({item}: ListRenderItemInfo<ProductInterface>) => {
     return (
-      <CardProduct
-        category={item.category}
-        image={item.image}
-        name={item.name}
-        stockQuantity={item.stockQuantity}
-      />
+      <Pressable
+        onPress={() => navigation.navigate('Product', {productId: item.id})}>
+        <CardProduct
+          category={item.category}
+          image={item.image}
+          name={item.name}
+          stockQuantity={item.stockQuantity}
+        />
+      </Pressable>
     );
   };
 

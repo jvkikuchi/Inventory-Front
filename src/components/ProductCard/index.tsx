@@ -4,7 +4,10 @@ import {Icon} from '../Icon';
 import type {ProductInterface} from '../../types/ProductInterface';
 
 const CardProduct = (
-  product: Omit<ProductInterface, 'createdAt' | 'id' | 'unitPrice'>,
+  product: Omit<
+    ProductInterface,
+    'createdAt' | 'id' | 'unitPrice' | 'description'
+  >,
 ): JSX.Element => {
   return (
     <HStack w="100%" paddingX={5} justifyContent={'space-between'}>

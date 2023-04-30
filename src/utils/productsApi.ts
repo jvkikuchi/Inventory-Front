@@ -37,9 +37,13 @@ const get = async (id?: string) => {
   return data;
 };
 
-const update = async (favorite: boolean, id: string) => {
-  const {data} = await axios.patch(`${url}/${id}`, {
-    favorite,
+const update = async (product: {
+  id: string;
+  unitPrice: number;
+  stockQuantity: number;
+}) => {
+  const {data} = await axios.put(`${url}/${product.id}`, {
+    ...product,
   });
 
   return data;
