@@ -11,6 +11,7 @@ import Loading from '../../components/Loading';
 import {categoryApi} from '../../utils/categoryApi';
 import Separator from '../../components/Separator';
 import {ProductInterface} from '../../types/ProductInterface';
+import {Fab} from 'native-base';
 
 const ListProducts = ({
   navigation,
@@ -165,6 +166,16 @@ const ListProducts = ({
               renderItem={renderProduct}
               data={data.products.slice(0, 10)}
               ItemSeparatorComponent={Separator}
+            />
+            <Fab
+              backgroundColor={'#FF9A3C'}
+              renderInPortal={false}
+              shadow={2}
+              size="sm"
+              onPress={() => navigation.navigate('UpseartProduct')}
+              icon={
+                <Icon name="Plus" strokeWidth={3} stroke="#FFF" fill="#FFF" />
+              }
             />
           </Box>
         </>

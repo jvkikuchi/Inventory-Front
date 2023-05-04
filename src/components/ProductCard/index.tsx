@@ -6,7 +6,7 @@ import type {ProductInterface} from '../../types/ProductInterface';
 const CardProduct = (
   product: Omit<
     ProductInterface,
-    'createdAt' | 'id' | 'unitPrice' | 'description'
+    'createdAt' | 'id' | 'unitPrice' | 'description' | 'suppliers'
   >,
 ): JSX.Element => {
   return (

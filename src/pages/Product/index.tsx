@@ -29,16 +29,8 @@ const Product = ({
   const {data, isLoading} = useQuery('get-product', async () => {
     const response: ProductInterface = await productsApi.get(productId);
 
-    setPrice(
-      typeof response.unitPrice === 'string'
-        ? Number(response.unitPrice)
-        : response.unitPrice,
-    );
-    setCount(
-      typeof response.stockQuantity === 'string'
-        ? Number(response.stockQuantity)
-        : response.stockQuantity,
-    );
+    setPrice(response.unitPrice);
+    setCount(response.stockQuantity);
 
     return response;
   });
@@ -49,8 +41,8 @@ const Product = ({
     () =>
       productsApi.update({
         id: productId,
-        unitPrice: price,
-        stockQuantity: count,
+        unitPrice: price.toString(),
+        stockQuantity: count.toString(),
       }),
     {
       onSuccess: () => {

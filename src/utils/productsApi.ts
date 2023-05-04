@@ -39,8 +39,13 @@ const get = async (id?: string) => {
 
 const update = async (product: {
   id: string;
-  unitPrice: number;
-  stockQuantity: number;
+  name?: string;
+  image?: string;
+  stockQuantity: string;
+  unitPrice: string;
+  categoryId?: string;
+  description?: string;
+  supplierId?: string;
 }) => {
   const {data} = await axios.put(`${url}/${product.id}`, {
     ...product,
