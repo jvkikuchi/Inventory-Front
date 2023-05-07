@@ -54,9 +54,28 @@ const update = async (product: {
   return data;
 };
 
+const create = async (product: {
+  id: string;
+  name?: string;
+  image?: string;
+  stockQuantity: string;
+  unitPrice: string;
+  categoryId?: string;
+  description?: string;
+  supplierId?: string;
+}) => {
+  const {data} = await axios.post(`${url}`, {
+    ...product,
+    createdAt: new Date(),
+  });
+
+  return data;
+};
+
 export const productsApi = {
   list,
   get,
+  create,
   update,
   delete: {},
   post: {},

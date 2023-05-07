@@ -1,5 +1,14 @@
 import React, {useState, useCallback} from 'react';
-import {Box, VStack, Text, Input, Modal, HStack, Pressable} from 'native-base';
+import {
+  Box,
+  VStack,
+  Text,
+  Input,
+  Modal,
+  HStack,
+  Pressable,
+  Spinner,
+} from 'native-base';
 import type {TabParamsList} from '../../types/rootStackParamListType';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Icon} from '../../components/Icon';
@@ -20,6 +29,10 @@ const ListProducts = ({
   const [filters, setFilter] = useState<Record<string, boolean>>({});
   const [tagFilter, setTagFilter] = useState<Record<string, boolean>>({});
   const [showModal, setShowModal] = useState(false);
+  const PAGE_SIZE = 10;
+  const [items, setItems] = useState();
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   const {data, isLoading} = useQuery(['list-products', filters], async () => {
     const [products, categories] = await Promise.all([
@@ -27,8 +40,35 @@ const ListProducts = ({
       categoryApi.list(),
     ]);
 
+    setItems(products);
+
     return {products, categories};
   });
+
+  const handleEndReached = () => {
+    if (loading) {
+      return;
+    }
+
+    setLoading(true);
+
+    const start = page * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+    console.log({
+      end,
+      x: data.products.length,
+    });
+    if (end === data.products.length) {
+      return;
+    }
+
+    setTimeout(() => {
+      // @ts-ignore data is array
+      setItems([...items, ...data.products.slice(start, end)]);
+      setPage(page + 1);
+      setLoading(false);
+    }, 1000);
+  };
 
   const renderProduct = ({item}: ListRenderItemInfo<ProductInterface>) => {
     return (
@@ -161,12 +201,21 @@ const ListProducts = ({
           </Modal>
           <Box flex={1} flexDirection={'column'}>
             <FlatList
+              onEndReached={handleEndReached}
+              onEndReachedThreshold={0.1}
               keyExtractor={item => item.id}
               showsVerticalScrollIndicator={false}
               renderItem={renderProduct}
-              data={data.products.slice(0, 10)}
+              data={items}
               ItemSeparatorComponent={Separator}
             />
+
+            {loading ? (
+              <HStack>
+                <Text>Carregando mais items</Text>
+                <Spinner size={'lg'} color={'#FF9A3C'} />
+              </HStack>
+            ) : null}
             <Fab
               backgroundColor={'#FF9A3C'}
               renderInPortal={false}

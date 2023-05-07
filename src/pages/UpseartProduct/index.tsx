@@ -62,13 +62,14 @@ const UpseartProduct = ({
       description?: string;
       supplierId: string;
     }) =>
-      productsApi.update({
-        id: '1',
+      productsApi.create({
+        id: '1212123231',
         ...productBody,
       }),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('list-products');
+        navigation.navigate('Product');
       },
     },
   );
@@ -84,7 +85,7 @@ const UpseartProduct = ({
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      setImage(result.assets[0].base64);
     }
   };
 
@@ -127,7 +128,6 @@ const UpseartProduct = ({
     mutate(productBody);
 
     //@ts-ignore I need read more about it!
-    navigation.navigate('Tabs');
   };
 
   return (
