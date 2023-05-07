@@ -14,6 +14,7 @@ import CircleBorder from '../../components/CircleBorder';
 import {Icon} from '../../components/Icon';
 import type {StackParamsList} from '../../types/rootStackParamListType';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {useSignIn} from '@clerk/clerk-expo';
 
 const Login = ({
   navigation,
@@ -23,14 +24,22 @@ const Login = ({
   const [isPasswordFocused, setPasswordFocused] = useState<boolean>(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    navigation.navigate('Tabs');
+  const {signIn, setActive} = useSignIn();
+
+  const handleSubmit = async () => {
+    try {
+      const completeSignIn = await signIn.create({
+        identifier: email,
+        password,
+      });
+      // This is an important step,
+      // This indicates the user is signed in
+      await setActive({session: completeSignIn.createdSessionId});
+      navigation.navigate('Tabs');
+    } catch (err: any) {
+      console.error(JSON.stringify(err, null, 2));
+    }
   };
 
   return (
@@ -110,7 +119,6 @@ const Login = ({
                 borderRadius={30}
                 padding="15px"
                 onPress={handleSubmit}
-                isLoading={isLoading}
                 _spinner={{size: 'lg'}}>
                 <Text fontSize={24} color="white" fontWeight="medium">
                   ENTRAR

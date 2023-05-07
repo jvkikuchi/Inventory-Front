@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@clerk/clerk-expo": "^0.16.4",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
@@ -43,6 +44,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-native": "^4.0.0",
     "prettier": "^2.8.7",
+    "react-native-dotenv": "^3.4.8",
     "typescript": "^5.0.4"
   },
   "private": true
