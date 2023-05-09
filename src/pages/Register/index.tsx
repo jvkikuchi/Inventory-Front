@@ -91,6 +91,7 @@ const Register = ({
             </Text>
           </FormControl.Label>
           <Input
+            inputMode="numeric"
             size={'2xl'}
             borderBottomWidth={2}
             variant="rounded"
