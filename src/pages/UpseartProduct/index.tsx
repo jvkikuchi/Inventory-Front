@@ -105,7 +105,7 @@ const UpseartProduct = ({
     {
       onSuccess: () => {
         queryClient.invalidateQueries('list-products');
-        navigation.navigate('Tabs');
+        navigation.navigate('ListProducts');
       },
     },
   );
