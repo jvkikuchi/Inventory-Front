@@ -1,134 +1,62 @@
-import React, {useState, useCallback} from 'react';
-import {
-  Box,
-  VStack,
-  Text,
-  Input,
-  Modal,
-  HStack,
-  Pressable,
-  Spinner,
-} from 'native-base';
+import React, {useState} from 'react';
+import {Box, VStack, Text, Input, Pressable} from 'native-base';
 import type {TabParamsList} from '../../types/rootStackParamListType';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Icon} from '../../components/Icon';
 import {FlatList, ListRenderItemInfo} from 'react-native';
-import {useQuery} from 'react-query';
+import {useInfiniteQuery} from 'react-query';
 import {productsApi} from '../../utils/productsApi';
 import CardProduct from '../../components/ProductCard';
 import Loading from '../../components/Loading';
-import {categoryApi} from '../../utils/categoryApi';
 import Separator from '../../components/Separator';
 import {ProductInterface} from '../../types/ProductInterface';
 import {Fab} from 'native-base';
+import {normalizeWord} from '../../utils/normalizeWord';
+import {useAuth} from '@clerk/clerk-expo';
 
 const ListProducts = ({
   navigation,
 }: NativeStackScreenProps<TabParamsList, 'ListProducts'>): JSX.Element => {
   const [value, setValue] = useState('');
-  const [filters, setFilter] = useState<Record<string, boolean>>({});
-  const [tagFilter, setTagFilter] = useState<Record<string, boolean>>({});
-  const [showModal, setShowModal] = useState(false);
-  const PAGE_SIZE = 10;
-  const [items, setItems] = useState();
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
 
-  const {data, isLoading} = useQuery(['list-products', filters], async () => {
-    const [products, categories] = await Promise.all([
-      productsApi.list(filters),
-      categoryApi.list(),
-    ]);
+  const {userId} = useAuth();
 
-    setItems(products);
+  const {data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading} =
+    useInfiniteQuery(
+      'list-products',
+      async ({pageParam}) => {
+        const response = await productsApi.list(userId, pageParam);
 
-    return {products, categories};
-  });
+        return response;
+      },
+      {
+        getNextPageParam: (lastPage, _pages) => {
+          return lastPage.totalPages > page + 1 ? page + 1 : undefined;
+        },
+      },
+    );
 
-  const handleEndReached = () => {
-    if (loading) {
-      return;
+  const handleLoadMore = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+      setPage(prevPage => prevPage + 1);
     }
-
-    setLoading(true);
-
-    const start = page * PAGE_SIZE;
-    const end = start + PAGE_SIZE;
-    console.log({
-      end,
-      x: data.products.length,
-    });
-    if (end === data.products.length) {
-      return;
-    }
-
-    setTimeout(() => {
-      // @ts-ignore data is array
-      setItems([...items, ...data.products.slice(start, end)]);
-      setPage(page + 1);
-      setLoading(false);
-    }, 1000);
   };
+
+  const products: ProductInterface[] =
+    data?.pages?.flatMap(p => p.products) ?? [];
 
   const renderProduct = ({item}: ListRenderItemInfo<ProductInterface>) => {
     return (
       <Pressable
         onPress={() => navigation.navigate('Product', {productId: item.id})}>
         <CardProduct
-          category={item.category}
           image={item.image}
           name={item.name}
           stockQuantity={item.stockQuantity}
         />
       </Pressable>
-    );
-  };
-
-  const handleTagFilter = useCallback(
-    tagName => {
-      setTagFilter(prevTagFilter => {
-        return {...prevTagFilter, [tagName]: !prevTagFilter[tagName]};
-      });
-    },
-    [setTagFilter],
-  );
-
-  const renderTags = tags => {
-    return (
-      <HStack
-        flexWrap={'wrap'}
-        flexGrow={2}
-        flexDirection={'row'}
-        alignItems={'center'}
-        alignContent={'flex-start'}
-        paddingY={2}
-        space={3}>
-        {tags.map(tag => {
-          const active = {
-            border: '#FF9A3C',
-            background: '#FF9A3C',
-          };
-          const inactive = {
-            border: '#AEAEAE',
-            background: '#FFF',
-          };
-          const colors = tagFilter[tag.name] ? active : inactive;
-          return (
-            <Pressable onPress={() => handleTagFilter(tag.name)} key={tag.id}>
-              <HStack
-                marginY={0.5}
-                padding={2}
-                borderRadius={20}
-                backgroundColor={colors.background}
-                borderWidth={1}
-                borderColor={colors.border}
-                alignItems={'center'}>
-                <Text>{tag.name}</Text>
-              </HStack>
-            </Pressable>
-          );
-        })}
-      </HStack>
     );
   };
 
@@ -152,9 +80,9 @@ const ListProducts = ({
           paddingX={5}
           placeholder="escreva o nome/codigo do produto"
           rightElement={
-            <Pressable onPress={() => setShowModal(true)}>
+            <Pressable>
               <Box paddingRight={2}>
-                <Icon name={'Filter'} width={30} height={30} fill="#5B5B5B" />
+                <Icon name={'Search'} width={30} height={30} fill="#D9D9D9" />
               </Box>
             </Pressable>
           }
@@ -176,46 +104,19 @@ const ListProducts = ({
         <Loading />
       ) : (
         <>
-          <Modal
-            isOpen={showModal}
-            onClose={() => setShowModal(false)}
-            size={'full'}>
-            <Modal.Content
-              padding={5}
-              borderTopRadius={60}
-              marginBottom={0}
-              marginTop={'auto'}>
-              <Modal.CloseButton />
-
-              <Modal.Header>Filtros</Modal.Header>
-              <Modal.Body>
-                <Box>
-                  <Text bold fontSize={'md'}>
-                    Categorias de produto:
-                  </Text>
-                  {renderTags(data.categories)}
-                </Box>
-                <Box />
-              </Modal.Body>
-            </Modal.Content>
-          </Modal>
           <Box flex={1} flexDirection={'column'}>
             <FlatList
-              onEndReached={handleEndReached}
+              onEndReached={handleLoadMore}
               onEndReachedThreshold={0.1}
               keyExtractor={item => item.id}
               showsVerticalScrollIndicator={false}
               renderItem={renderProduct}
-              data={items}
+              data={products.filter(({name}) =>
+                normalizeWord(name).includes(normalizeWord(value)),
+              )}
               ItemSeparatorComponent={Separator}
             />
 
-            {loading ? (
-              <HStack>
-                <Text>Carregando mais items</Text>
-                <Spinner size={'lg'} color={'#FF9A3C'} />
-              </HStack>
-            ) : null}
             <Fab
               backgroundColor={'#FF9A3C'}
               renderInPortal={false}

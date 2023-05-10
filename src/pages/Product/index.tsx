@@ -136,7 +136,7 @@ const Product = ({
                   alignContent={'flex-start'}
                   paddingY={2}
                   space={3}>
-                  {[data.suppliers].map((c, index) => (
+                  {/*       {[data.suppliers].map((c, index) => (
                     <Mark
                       iconName={'User'}
                       iconStroke={'#303841'}
@@ -146,7 +146,7 @@ const Product = ({
                       border={markColor}
                       key={index}
                     />
-                  ))}
+                  ))} */}
                 </HStack>
               </VStack>
               <VStack marginBottom={3}>
@@ -161,7 +161,7 @@ const Product = ({
                   alignContent={'flex-start'}
                   paddingY={2}
                   space={3}>
-                  {[data.category].map((c, index) => (
+                  {/*          {[data.category].map((c, index) => (
                     <Mark
                       iconName={'Bookmark'}
                       iconStroke={'#303841'}
@@ -171,7 +171,7 @@ const Product = ({
                       border={markColor}
                       key={index}
                     />
-                  ))}
+                  ))} */}
                 </HStack>
               </VStack>
             </ScrollView>

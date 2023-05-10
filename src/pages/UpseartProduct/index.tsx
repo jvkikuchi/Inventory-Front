@@ -25,21 +25,57 @@ import Mark from '../../components/Mark';
 import * as ImagePicker from 'expo-image-picker';
 import {Icon} from '../../components/Icon';
 import {Alert} from 'react-native';
+import {useAuth} from '@clerk/clerk-expo';
+import AWS from 'aws-sdk';
+import {Buffer} from 'buffer';
 
 const UpseartProduct = ({
   navigation,
 }: NativeStackScreenProps<TabParamsList, 'UpseartProduct'>): JSX.Element => {
+  const {userId} = useAuth();
+
   const [price, setPrice] = useState('');
   const [count, setCount] = useState('');
   const [showCategoriesModal, setShowCategoriesModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [supplier, setSupplier] = useState<{id?: string; name?: string}>({});
   const [category, setCategory] = useState<{id?: string; name?: string}>({});
-  const [image, setImage] = useState<string | undefined>();
+  const [imagePreview, setImagePreview] = useState<string | undefined>();
+  const [imageBase64, setImageBase64] = useState<string | undefined>();
   const [description, setDescription] = useState('');
   const [name, setName] = useState('');
 
   const markColor = '#FF9A3C';
+
+  AWS.config.update({
+    accessKeyId: process.env.ACCESS_KEY_ID,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY,
+  });
+
+  const s3 = new AWS.S3({
+    region: 'sa-east-1',
+  });
+
+  const uploadImageFromUrl = async (imageUrl: string) => {
+    try {
+      const fileName = `${name}.png`;
+
+      const params = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: fileName,
+        Body: Buffer.from(imageUrl, 'base64'),
+        ContentType: 'image/png',
+        ACL: 'public-read',
+      };
+
+      const {Location} = await s3.upload(params).promise();
+      console.log(`Image uploaded to S3: ${Location}`);
+
+      return Location;
+    } catch (error) {
+      console.error(`Failed to upload image to S3: ${error}`);
+    }
+  };
 
   const {data, isLoading} = useQuery('get-categorys-suplliers', async () => {
     const [suppliersData, categoriesData] = await Promise.all([
@@ -54,22 +90,22 @@ const UpseartProduct = ({
 
   const {mutate} = useMutation(
     (productBody: {
+      userId: string;
       name: string;
       image?: string;
-      stockQuantity: string;
-      unitPrice: string;
-      categoryId: string;
+      stockQuantity: number;
+      unitPrice: number;
+      categoryId: number;
       description?: string;
-      supplierId: string;
+      supplierId: number;
     }) =>
       productsApi.create({
-        id: '1212123231',
         ...productBody,
       }),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('list-products');
-        navigation.navigate('Product');
+        navigation.navigate('Tabs');
       },
     },
   );
@@ -85,19 +121,21 @@ const UpseartProduct = ({
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].base64);
+      setImageBase64(result.assets[0].base64);
+      setImagePreview(result.assets[0].uri);
     }
   };
 
   const submitItem = async () => {
     const productBody = {
+      userId,
       name,
-      image,
-      stockQuantity: count,
-      unitPrice: price,
-      categoryId: category.id,
+      image: null,
+      stockQuantity: Number(count),
+      unitPrice: Number(price),
+      categoryId: Number(category.id),
       description,
-      supplierId: supplier.id,
+      supplierId: Number(supplier.id),
     };
 
     const requiredInformation = {
@@ -123,11 +161,17 @@ const UpseartProduct = ({
           ', ',
         )}`,
       );
+
+      return;
+    }
+
+    if (imagePreview) {
+      productBody.image = await uploadImageFromUrl(imageBase64);
+
+      console.log(productBody);
     }
 
     mutate(productBody);
-
-    //@ts-ignore I need read more about it!
   };
 
   return (
@@ -250,12 +294,12 @@ const UpseartProduct = ({
                   <Pressable onPress={() => pickImage()}>
                     <Image
                       source={
-                        image
-                          ? {uri: image}
+                        imagePreview
+                          ? {uri: imagePreview}
                           : require('../../../assets/no-image.png')
                       }
-                      w={200}
-                      h={200}
+                      w={180}
+                      h={180}
                       borderRadius={200}
                       alt="product-image"
                     />

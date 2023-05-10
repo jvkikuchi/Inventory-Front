@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const url = 'https://6435f4b43e4d2b4a12c8253f.mockapi.io/category';
+const url = 'http://192.168.100.40:3000/dev/supplier';
 
 const list = async () => {
   const {data} = await axios.get(url, {
@@ -10,11 +10,15 @@ const list = async () => {
     },
   });
 
-  return data.map(s => {
-    s.name = s.suppliers;
-    delete s.suppliers;
-    return s;
+  return data.suppliers;
+};
+
+const update = async (favorite: boolean, id: string) => {
+  const {data} = await axios.patch(`${url}/${id}`, {
+    favorite,
   });
+
+  return data;
 };
 
 const get = async (id?: string) => {
@@ -27,14 +31,6 @@ const get = async (id?: string) => {
 
   data.name = data.suppliers;
   delete data.suppliers;
-
-  return data;
-};
-
-const update = async (favorite: boolean, id: string) => {
-  const {data} = await axios.patch(`${url}/${id}`, {
-    favorite,
-  });
 
   return data;
 };

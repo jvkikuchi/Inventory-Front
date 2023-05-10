@@ -1,25 +1,20 @@
 import axios from 'axios';
+import type {ProductInterface} from '../types/ProductInterface';
 
-const url = 'https://6435f4b43e4d2b4a12c8253f.mockapi.io/product';
+const url = 'http://192.168.100.40:3000/dev/product';
 
-const list = async (filters: Record<string, boolean>) => {
-  const filtersToUse = Object.keys(filters).reduce((acc, cr) => {
-    const key = cr;
-
-    if (filters[key]) {
-      acc.push(key);
-    }
-
-    return acc;
-  }, [] as string[]);
-
+const list = async (
+  userId: string,
+  page: number = 1,
+): Promise<{products: ProductInterface[]; count: number; totalPages: 1}> => {
   const {data} = await axios.get(url, {
     headers: {
       Accept: 'application/json',
       'content-Type': 'application/json',
     },
     params: {
-      tag: filtersToUse,
+      userId,
+      page,
     },
   });
 
@@ -55,18 +50,17 @@ const update = async (product: {
 };
 
 const create = async (product: {
-  id: string;
-  name?: string;
+  userId: string;
+  name: string;
   image?: string;
-  stockQuantity: string;
-  unitPrice: string;
-  categoryId?: string;
+  stockQuantity: number;
+  unitPrice: number;
+  categoryId: number;
   description?: string;
-  supplierId?: string;
+  supplierId: number;
 }) => {
   const {data} = await axios.post(`${url}`, {
     ...product,
-    createdAt: new Date(),
   });
 
   return data;
