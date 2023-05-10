@@ -14,6 +14,7 @@ import type {
 } from './types/rootStackParamListType';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Icon} from './components/Icon';
+import {useAuth} from '@clerk/clerk-expo';
 
 const Tab = createBottomTabNavigator<TabParamsList>();
 
@@ -57,10 +58,12 @@ const TabsStack = () => {
 
 const Stack = createNativeStackNavigator<StackParamsList>();
 export const Routes = () => {
+  const {isLoaded} = useAuth();
+
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={'UpseartProduct'}
+        initialRouteName={isLoaded ? 'Login' : 'Tabs'}
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
