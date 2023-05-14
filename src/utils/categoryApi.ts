@@ -11,7 +11,7 @@ const list = async (userId: string) => {
     },
   });
 
-  return data;
+  return data.categories;
 };
 
 const get = async (id?: string) => {
