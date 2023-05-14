@@ -10,11 +10,11 @@ import {
   ScrollView,
 } from 'native-base';
 import type {TabParamsList} from '../../types/rootStackParamListType';
-import type {ProductInterface} from '../../types/ProductInterface';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useQuery, useMutation, useQueryClient} from 'react-query';
 import {productsApi} from '../../utils/productsApi';
 import QuantityButton from '../../components/QuantityButton';
+import Mark from '../../components/Mark';
 
 const Product = ({
   route,
@@ -24,9 +24,8 @@ const Product = ({
   const [price, setPrice] = useState(0);
   const [count, setCount] = useState(0);
 
-  console.log(count, price);
   const {data, isLoading} = useQuery('get-product', async () => {
-    const response: ProductInterface = await productsApi.get(productId);
+    const response = await productsApi.get(productId);
 
     setPrice(response.unitPrice);
     setCount(response.stockQuantity);
@@ -50,6 +49,7 @@ const Product = ({
     },
   );
 
+  const markColor = '#FF9A3C';
   return (
     <Box flex={1} backgroundColor={'#f6f6f6'}>
       {isLoading ? (
@@ -78,7 +78,13 @@ const Product = ({
               safeArea
               borderColor={'#6D6D6D'}
               justifyContent={'center'}>
-              <Heading fontSize={'4xl'} textAlign={'center'} color={'#FFFFFF'}>
+              <Heading
+                paddingX={5}
+                fontSize={'4xl'}
+                width={'100%'}
+                textAlign={'center'}
+                flexWrap={'wrap'}
+                color={'#FFFFFF'}>
                 {data.name}
               </Heading>
             </HStack>
@@ -127,7 +133,7 @@ const Product = ({
             </Box>
           </Box>
 
-          <Box flexDirection={'column'} padding={5} flex={0.8}>
+          <Box flexDirection={'column'} padding={5} flex={0.6}>
             <ScrollView showsVerticalScrollIndicator={false}>
               <VStack marginBottom={3}>
                 <Heading marginBottom={3} fontSize={23} bold>
@@ -147,17 +153,17 @@ const Product = ({
                   alignContent={'flex-start'}
                   paddingY={2}
                   space={3}>
-                  {/*       {[data.suppliers].map((c, index) => (
+                  {data.suppliers.map((s, index) => (
                     <Mark
                       iconName={'User'}
                       iconStroke={'#303841'}
                       iconFill={markColor}
-                      name={c}
+                      name={s.name}
                       background={markColor}
                       border={markColor}
                       key={index}
                     />
-                  ))} */}
+                  ))}
                 </HStack>
               </VStack>
               <VStack marginBottom={3}>
@@ -172,17 +178,17 @@ const Product = ({
                   alignContent={'flex-start'}
                   paddingY={2}
                   space={3}>
-                  {/*          {[data.category].map((c, index) => (
+                  {data.categories.map((c, index) => (
                     <Mark
                       iconName={'Bookmark'}
                       iconStroke={'#303841'}
                       iconFill={markColor}
-                      name={c}
+                      name={c.name}
                       background={markColor}
                       border={markColor}
                       key={index}
                     />
-                  ))} */}
+                  ))}
                 </HStack>
               </VStack>
             </ScrollView>
