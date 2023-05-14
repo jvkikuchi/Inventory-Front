@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Box, VStack, Text, Input, Pressable} from 'native-base';
+import {Box, VStack, Text, Input, Pressable, Spinner} from 'native-base';
 import type {TabParamsList} from '../../types/rootStackParamListType';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Icon} from '../../components/Icon';
@@ -31,17 +31,25 @@ const ListProducts = ({
         return response;
       },
       {
-        getNextPageParam: (lastPage, _pages) => {
-          return lastPage.totalPages > page + 1 ? page + 1 : undefined;
+        getNextPageParam: lastPage => {
+          if (page < lastPage.totalPages) {
+            return page + 1;
+          }
+
+          return undefined;
         },
       },
     );
 
   const handleLoadMore = () => {
-    if (hasNextPage && !isFetchingNextPage) {
+    if (hasNextPage) {
       fetchNextPage();
       setPage(prevPage => prevPage + 1);
     }
+  };
+
+  const renderSpinner = () => {
+    return <Spinner color={'#FF9A3C'} size="lg" />;
   };
 
   const products: ProductInterface[] =
@@ -108,13 +116,14 @@ const ListProducts = ({
             <FlatList
               onEndReached={handleLoadMore}
               onEndReachedThreshold={0.1}
-              keyExtractor={item => item.id}
+              keyExtractor={item => `${item.id}`}
               showsVerticalScrollIndicator={false}
               renderItem={renderProduct}
               data={products.filter(({name}) =>
                 normalizeWord(name).includes(normalizeWord(value)),
               )}
               ItemSeparatorComponent={Separator}
+              ListFooterComponent={isFetchingNextPage ? renderSpinner : null}
             />
 
             <Fab

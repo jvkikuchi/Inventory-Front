@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const url = 'http://192.168.100.40:3000/dev/supplier';
+const url =
+  'https://w99pdhthz7.execute-api.sa-east-1.amazonaws.com/dev/supplier';
 
 const list = async () => {
   const {data} = await axios.get(url, {

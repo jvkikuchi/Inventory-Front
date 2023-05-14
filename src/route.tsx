@@ -1,10 +1,9 @@
-/* eslint-disable react/no-unstable-nested-components */
 import Register from './pages/Register';
 import Login from './pages/Login';
 import ListProducts from './pages/ListProducts';
 import Product from './pages/Product';
-import UpseartProduct from './pages/UpseartProduct';
-
+/*import UpseartProduct from './pages/UpseartProduct';
+ */
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
@@ -63,12 +62,12 @@ export const Routes = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={isLoaded ? 'Login' : 'Tabs'}
+        initialRouteName={'Tabs'}
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Product" component={Product} />
-        <Stack.Screen name="UpseartProduct" component={UpseartProduct} />
+        {/*  <Stack.Screen name="UpseartProduct" component={UpseartProduct} />*/}
         <Stack.Screen name="Tabs" component={TabsStack} />
       </Stack.Navigator>
     </NavigationContainer>

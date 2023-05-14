@@ -1,6 +1,5 @@
 import React from 'react';
 import {Box, Text, HStack, Image} from 'native-base';
-import {Icon} from '../Icon';
 import {capitalizeFirstLetter} from '../../utils/capitalizeFirstLetter';
 
 const CardProduct = ({
@@ -31,12 +30,13 @@ const CardProduct = ({
           }
           alt="Alternate Text"
         />
-        <Box ml={6}>
-          <Text fontSize={'2xl'}>{capitalizeFirstLetter(name)}</Text>
+        <Box ml={6} flexWrap={'wrap'}>
+          <Text w={'90%'} fontSize={'lg'}>
+            {capitalizeFirstLetter(name)}
+          </Text>
         </Box>
       </Box>
       <Box flexDirection={'row'} alignItems={'center'}>
-        <Icon name={'Minus'} strokeWidth={3} stroke="#000" />
         <Box
           marginX={2}
           padding={2}
@@ -48,7 +48,6 @@ const CardProduct = ({
           alignItems={'center'}>
           <Text>{stockQuantity}</Text>
         </Box>
-        <Icon name={'Plus'} strokeWidth={3} stroke="#000" />
       </Box>
     </HStack>
   );

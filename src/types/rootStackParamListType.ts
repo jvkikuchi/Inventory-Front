@@ -1,6 +1,6 @@
 export type CommonScreen = {
   Product: {
-    productId: string;
+    productId: number;
   };
   UpseartProduct: undefined;
 };

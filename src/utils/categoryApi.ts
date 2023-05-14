@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const url = 'https://6435f4b43e4d2b4a12c8253f.mockapi.io/category';
+const url =
+  'https://w99pdhthz7.execute-api.sa-east-1.amazonaws.com/dev/category';
 
 const list = async () => {
   const {data} = await axios.get(url, {

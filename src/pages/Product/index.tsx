@@ -6,6 +6,7 @@ import {
   Text,
   HStack,
   VStack,
+  Spinner,
   ScrollView,
 } from 'native-base';
 import type {TabParamsList} from '../../types/rootStackParamListType';
@@ -13,8 +14,6 @@ import type {ProductInterface} from '../../types/ProductInterface';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useQuery, useMutation, useQueryClient} from 'react-query';
 import {productsApi} from '../../utils/productsApi';
-import Loading from '../../components/Loading';
-import Mark from '../../components/Mark';
 import QuantityButton from '../../components/QuantityButton';
 
 const Product = ({
@@ -51,12 +50,24 @@ const Product = ({
     },
   );
 
-  const markColor = '#FF9A3C';
-
   return (
     <Box flex={1} backgroundColor={'#f6f6f6'}>
       {isLoading ? (
-        <Loading count={1} />
+        <HStack
+          space={2}
+          justifyContent="center"
+          alignItems={'center'}
+          flex={1}
+          backgroundColor={'#3A4750'}>
+          <Spinner
+            size="lg"
+            color={'#FF9A3C'}
+            accessibilityLabel="Carregando product"
+          />
+          <Heading color="#FF9A3C" fontSize="2xl">
+            Carregando
+          </Heading>
+        </HStack>
       ) : (
         <Box safeArea flex={1}>
           <Box flex={1} backgroundColor={'#3A4750'}>
@@ -77,7 +88,7 @@ const Product = ({
                 h={200}
                 borderRadius={200}
                 source={{uri: data.image}}
-                alt={productId}
+                alt={`${productId}`}
               />
             </Box>
             <Box w="100%" flexDirection={'row'} justifyContent={'space-around'}>

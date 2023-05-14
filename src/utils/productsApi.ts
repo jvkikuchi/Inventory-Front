@@ -1,12 +1,17 @@
 import axios from 'axios';
 import type {ProductInterface} from '../types/ProductInterface';
 
-const url = 'http://192.168.100.40:3000/dev/product';
+const url =
+  'https://w99pdhthz7.execute-api.sa-east-1.amazonaws.com/dev/product';
 
 const list = async (
   userId: string,
   page: number = 1,
-): Promise<{products: ProductInterface[]; count: number; totalPages: 1}> => {
+): Promise<{
+  products: ProductInterface[];
+  count: number;
+  totalPages: number;
+}> => {
   const {data} = await axios.get(url, {
     headers: {
       Accept: 'application/json',
@@ -21,7 +26,7 @@ const list = async (
   return data;
 };
 
-const get = async (id?: string) => {
+const get = async (id?: number) => {
   const {data} = await axios.get(`${url}/${id}`, {
     headers: {
       Accept: 'application/json',
@@ -33,7 +38,7 @@ const get = async (id?: string) => {
 };
 
 const update = async (product: {
-  id: string;
+  id: number;
   name?: string;
   image?: string;
   stockQuantity: string;

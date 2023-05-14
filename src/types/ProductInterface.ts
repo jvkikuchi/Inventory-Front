@@ -8,5 +8,5 @@ export interface ProductInterface {
   description: string;
   stockQuantity: number;
   unitPrice: number;
-  id: string;
+  id: number;
 }
