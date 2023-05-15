@@ -2,8 +2,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import ListProducts from './pages/ListProducts';
 import Product from './pages/Product';
-/*import UpseartProduct from './pages/UpseartProduct';
- */
+import UpseartProduct from './pages/UpseartProduct';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
@@ -14,11 +13,13 @@ import type {
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Icon} from './components/Icon';
 import {useAuth} from '@clerk/clerk-expo';
+import Metrics from './pages/Metrics';
 
 const Tab = createBottomTabNavigator<TabParamsList>();
 
 const icons = {
   ListProducts: 'BookOpen',
+  Metrics: 'PieChart',
 };
 
 const TabsStack = () => {
@@ -51,6 +52,7 @@ const TabsStack = () => {
         },
       })}>
       <Tab.Screen name="ListProducts" component={ListProducts} />
+      <Tab.Screen name="Metrics" component={Metrics} />
     </Tab.Navigator>
   );
 };
@@ -62,12 +64,12 @@ export const Routes = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={'Tabs'}
+        initialRouteName={isLoaded ? 'Tabs' : 'Login'}
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Product" component={Product} />
-        {/*  <Stack.Screen name="UpseartProduct" component={UpseartProduct} />*/}
+        <Stack.Screen name="UpseartProduct" component={UpseartProduct} />
         <Stack.Screen name="Tabs" component={TabsStack} />
       </Stack.Navigator>
     </NavigationContainer>

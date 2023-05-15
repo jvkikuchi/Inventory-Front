@@ -167,8 +167,6 @@ const UpseartProduct = ({
 
     if (imagePreview) {
       productBody.image = await uploadImageFromUrl(imageBase64);
-
-      console.log(productBody);
     }
 
     mutate(productBody);

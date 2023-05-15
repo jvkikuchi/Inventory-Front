@@ -48,13 +48,14 @@ const update = async (product: {
   id: number;
   name?: string;
   image?: string;
-  stockQuantity: string;
-  unitPrice: string;
+  stockQuantity: number;
+  unitPrice: number;
   categoryId?: string;
   description?: string;
   supplierId?: string;
+  userId: string;
 }) => {
-  const {data} = await axios.put(`${url}/${product.id}`, {
+  const {data} = await axios.put(`${url}`, {
     ...product,
   });
 

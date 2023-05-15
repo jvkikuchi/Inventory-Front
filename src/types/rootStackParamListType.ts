@@ -14,4 +14,5 @@ export type StackParamsList = {
 
 export type TabParamsList = {
   ListProducts: undefined;
+  Metrics: undefined;
 } & CommonScreen;

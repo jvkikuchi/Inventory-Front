@@ -15,32 +15,52 @@ import {useQuery, useMutation, useQueryClient} from 'react-query';
 import {productsApi} from '../../utils/productsApi';
 import QuantityButton from '../../components/QuantityButton';
 import Mark from '../../components/Mark';
+import {useAuth} from '@clerk/clerk-expo';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Product = ({
   route,
 }: NativeStackScreenProps<TabParamsList, 'Product'>): JSX.Element => {
   const {productId} = route.params;
+  const {userId} = useAuth();
+  const firstTimeRef = React.useRef(true);
 
   const [price, setPrice] = useState(0);
   const [count, setCount] = useState(0);
 
-  const {data, isLoading} = useQuery('get-product', async () => {
-    const response = await productsApi.get(productId);
-
-    setPrice(response.unitPrice);
-    setCount(response.stockQuantity);
-
-    return response;
-  });
-
   const queryClient = useQueryClient();
+
+  const {data, isLoading, refetch, isRefetching} = useQuery(
+    'get-product',
+    async () => {
+      const response = await productsApi.get(productId);
+
+      setPrice(response.unitPrice);
+      setCount(response.stockQuantity);
+
+      return response;
+    },
+    {refetchOnWindowFocus: true},
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (firstTimeRef.current) {
+        firstTimeRef.current = false;
+        return;
+      }
+
+      refetch();
+    }, [refetch]),
+  );
 
   const {mutate} = useMutation(
     () =>
       productsApi.update({
         id: productId,
-        unitPrice: price.toString(),
-        stockQuantity: count.toString(),
+        unitPrice: Number(price),
+        stockQuantity: Number(count),
+        userId,
       }),
     {
       onSuccess: () => {
@@ -52,7 +72,7 @@ const Product = ({
   const markColor = '#FF9A3C';
   return (
     <Box flex={1} backgroundColor={'#f6f6f6'}>
-      {isLoading ? (
+      {isLoading || isRefetching ? (
         <HStack
           space={2}
           justifyContent="center"

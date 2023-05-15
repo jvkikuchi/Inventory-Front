@@ -21,7 +21,6 @@ const ListProducts = ({
   const [page, setPage] = useState(0);
 
   const {userId} = useAuth();
-
   const {data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading} =
     useInfiniteQuery(
       'list-products',
@@ -58,7 +57,9 @@ const ListProducts = ({
   const renderProduct = ({item}: ListRenderItemInfo<ProductInterface>) => {
     return (
       <Pressable
-        onPress={() => navigation.navigate('Product', {productId: item.id})}>
+        onPress={() => {
+          navigation.navigate('Product', {productId: item.id});
+        }}>
         <CardProduct
           image={item.image}
           name={item.name}
