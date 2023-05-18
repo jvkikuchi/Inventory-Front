@@ -260,7 +260,8 @@ const UpseartProduct = ({
                 alignItems={'center'}
                 safeArea
                 borderColor={'#6D6D6D'}
-                justifyContent={'center'}>
+                justifyContent={'center'}
+                paddingTop={5}>
                 <Input
                   color="#FFF"
                   fontSize={'2xl'}

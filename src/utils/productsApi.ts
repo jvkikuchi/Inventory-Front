@@ -3,8 +3,7 @@ import type {ProductInterface} from '../types/ProductInterface';
 import {CategoryType} from '../types/CategorieType';
 import {SupplierType} from '../types/SuppplierType';
 
-const url =
-  'https://w99pdhthz7.execute-api.sa-east-1.amazonaws.com/dev/product';
+const url = `${process.env.API_DOMAIN}/product`;
 
 const list = async (
   userId: string,

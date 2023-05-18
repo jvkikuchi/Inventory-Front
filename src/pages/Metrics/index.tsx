@@ -7,7 +7,6 @@ import PaymentMethodMetrics from './components/PaymentMethodMetrics';
 import SalesCard from './components/SalesCard';
 import {statisticsApi} from '../../utils/statisticsApi';
 import {useAuth} from '@clerk/clerk-expo';
-import ProductChart from './components/ProductChart';
 
 const Metrics = ({}: NativeStackScreenProps<
   TabParamsList,
@@ -114,7 +113,6 @@ const Metrics = ({}: NativeStackScreenProps<
             </Text>
           </Box>
         </Box>
-        <ProductChart />
       </ScrollView>
     </Box>
   );
