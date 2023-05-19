@@ -22,30 +22,24 @@ const ListProducts = ({
 
   const {userId} = useAuth();
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-    isRefetching,
-  } = useInfiniteQuery(
-    'list-products',
-    async ({pageParam}) => {
-      const response = await productsApi.list(userId, pageParam);
+  const {data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading} =
+    useInfiniteQuery(
+      'list-products',
+      async ({pageParam}) => {
+        const response = await productsApi.list(userId, pageParam);
 
-      return response;
-    },
-    {
-      getNextPageParam: lastPage => {
-        if (page < lastPage.totalPages) {
-          return page + 1;
-        }
-
-        return undefined;
+        return response;
       },
-    },
-  );
+      {
+        getNextPageParam: lastPage => {
+          if (page < lastPage.totalPages) {
+            return page + 1;
+          }
+
+          return undefined;
+        },
+      },
+    );
 
   const handleLoadMore = () => {
     if (hasNextPage) {
@@ -116,7 +110,7 @@ const ListProducts = ({
           }
         />
       </VStack>
-      {isLoading || isRefetching ? (
+      {isLoading ? (
         <Loading />
       ) : (
         <>
