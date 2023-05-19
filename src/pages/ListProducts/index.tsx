@@ -33,7 +33,7 @@ const ListProducts = ({
       {
         getNextPageParam: lastPage => {
           if (page < lastPage.totalPages) {
-            return page + 1;
+            return page;
           }
 
           return undefined;
@@ -118,7 +118,7 @@ const ListProducts = ({
             <FlatList
               onEndReached={handleLoadMore}
               onEndReachedThreshold={0.1}
-              keyExtractor={item => `${item.id}`}
+              keyExtractor={item => `${item.id}-${Math.random()}`}
               showsVerticalScrollIndicator={false}
               renderItem={renderProduct}
               data={products.filter(({name}) =>

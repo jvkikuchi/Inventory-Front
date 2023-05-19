@@ -21,6 +21,7 @@ const list = async (
     params: {
       userId,
       page,
+      orderBy: 'desc',
     },
   });
 

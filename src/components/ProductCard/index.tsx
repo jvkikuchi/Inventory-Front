@@ -30,8 +30,8 @@ const CardProduct = ({
           }
           alt="Alternate Text"
         />
-        <Box ml={6} flexWrap={'wrap'}>
-          <Text w={'90%'} fontSize={'lg'}>
+        <Box ml={5} flexWrap={'wrap'}>
+          <Text w={'100%'} fontSize={'lg'}>
             {capitalizeFirstLetter(name)}
           </Text>
         </Box>
