@@ -15,6 +15,7 @@ import {Icon} from '../../components/Icon';
 import type {StackParamsList} from '../../types/rootStackParamListType';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useSignIn} from '@clerk/clerk-expo';
+import {Alert} from 'react-native';
 
 const Login = ({
   navigation,
@@ -38,7 +39,10 @@ const Login = ({
       await setActive({session: completeSignIn.createdSessionId});
       navigation.navigate('Tabs');
     } catch (err: any) {
-      console.error(JSON.stringify(err, null, 2));
+      // @ts-ignore
+      Alert.alert(err.errors[0].message); // Exibe o erro em um alert
+
+      console.error({x: JSON.stringify(err.errors[0].message)});
     }
   };
 

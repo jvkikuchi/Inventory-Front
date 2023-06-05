@@ -48,8 +48,8 @@ const UpseartProduct = ({
   const markColor = '#FF9A3C';
 
   AWS.config.update({
-    accessKeyId: process.env.ACCESS_KEY_ID,
-    secretAccessKey: process.env.SECRET_ACCESS_KEY,
+    accessKeyId: 'AKIA4OJGJBB2OWQFLVXK',
+    secretAccessKey: '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',
   });
 
   const s3 = new AWS.S3({
@@ -61,7 +61,7 @@ const UpseartProduct = ({
       const fileName = `${name}.png`;
 
       const params = {
-        Bucket: process.env.BUCKET_NAME,
+        Bucket: 'inventory-products-images-back-end',
         Key: fileName,
         Body: Buffer.from(imageUrl, 'base64'),
         ContentType: 'image/png',

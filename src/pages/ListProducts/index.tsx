@@ -18,7 +18,7 @@ const ListProducts = ({
   navigation,
 }: NativeStackScreenProps<TabParamsList, 'ListProducts'>): JSX.Element => {
   const [value, setValue] = useState('');
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
 
   const {userId} = useAuth();
 
@@ -43,7 +43,7 @@ const ListProducts = ({
 
   const handleLoadMore = () => {
     if (hasNextPage) {
-      fetchNextPage();
+      fetchNextPage({pageParam: page});
       setPage(prevPage => prevPage + 1);
     }
   };
@@ -89,13 +89,6 @@ const ListProducts = ({
           backgroundColor={'#D9D9D9'}
           paddingX={5}
           placeholder="escreva o nome/codigo do produto"
-          rightElement={
-            <Pressable>
-              <Box paddingRight={2}>
-                <Icon name={'Search'} width={30} height={30} fill="#D9D9D9" />
-              </Box>
-            </Pressable>
-          }
           leftElement={
             <Box paddingLeft={2}>
               <Icon

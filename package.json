@@ -9,6 +9,8 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@capacitor/cli": "^5.0.4",
+    "@capacitor/core": "^5.0.4",
     "@clerk/clerk-expo": "^0.16.4",
     "@react-native-community/art": "^1.2.0",
     "@react-navigation/bottom-tabs": "^6.5.7",
@@ -34,7 +36,10 @@
     "react-native-screens": "~3.20.0",
     "react-native-svg": "13.4.0",
     "react-query": "^3.39.3",
-    "zustand": "^4.3.7"
+    "zustand": "^4.3.7",
+    "expo-auth-session": "~4.0.3",
+    "expo-crypto": "~12.2.1",
+    "@types/react": "~18.0.27"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

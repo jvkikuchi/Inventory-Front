@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const url = `${process.env.API_DOMAIN}/category`;
+const url = 'https://w99pdhthz7.execute-api.sa-east-1.amazonaws.com/dev/category';
 
 const list = async (userId: string) => {
   const {data} = await axios.get(`${url}/${userId}`, {

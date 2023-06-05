@@ -3,7 +3,7 @@ import axios from 'axios';
 import {FinancialStatisticsType} from '../types/StatisticsType';
 import {ProductStatisticsInterface} from '../types/ProductInterface';
 
-const url = `${process.env.API_DOMAIN}/statistics`;
+const url = 'https://w99pdhthz7.execute-api.sa-east-1.amazonaws.com/dev/statistics';
 
 const get = async (
   userId: string,
