@@ -78,6 +78,7 @@ const Login = ({
               type="text"
               borderBottomColor={isEmailFocused ? '#FF9A3C' : 'gray.500'}
               mb={10}
+              testID="email-input"
             />
             <FormControl.Label
               mt={7}
@@ -101,6 +102,7 @@ const Login = ({
               borderBottomColor={isPasswordFocused ? '#FF9A3C' : 'gray.500'}
               variant="underlined"
               type={showPassword ? 'text' : 'password'}
+              testID="password-input"
               InputRightElement={
                 <Pressable onPress={() => setShowPassword(!showPassword)}>
                   <Icon name={showPassword ? 'Eye' : 'EyeOff'} />
