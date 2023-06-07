@@ -100,4 +100,21 @@ describe('Login', () => {
     // Reset the global flag
     global.throwSignInError = false;
   });
+
+  test('Transition to register page', async () => {
+    const mockNavigate = jest.fn();
+    const navigation = {navigate: mockNavigate};
+    render(
+      <NativeBaseProvider initialWindowMetrics={inset}>
+        {/* @ts-ignore ignoring the type of the function that its passed to the component*/}
+        <Login navigation={navigation} route={undefined} />
+      </NativeBaseProvider>,
+    );
+
+    const text = screen.getByText('criar conta');
+
+    expect(text).toBeTruthy();
+    fireEvent.press(text);
+    expect(mockNavigate).toHaveBeenCalledWith('Register');
+  });
 });
